@@ -1,11 +1,55 @@
-<script>
-// decryption from user input
-
-</script>
-
 <p>very secret santa</p>
-<p>enter your unique code:</p>
-<form>
-
+<form id="form">
+  <label>enter your unique code: <input id="code" autocomplete="off"></label>
+  <button>reveal</button>
 </form>
-<p>answer: </p>
+<p>answer: <span id="answer"></span></p>
+
+<script>
+// paste the contents of blobs.json here
+const BLOBS = [
+  "YCkbcYto8e8LMHBQRWpyVqysTOOHP7aR0UgIvi6tdFllwc/lisDmRBAxedY=",
+  "r7/0WRxbM8aDMdhC2SuvOAV5cYSYHsiWQIqpxucDLYFHit+iePk162kw4do=",
+  "slVep/S0MFxe4Xi0W7LKjuAfEEVJmVi7BhqEVIuoDNCBIYm9Z5FYVGgz7Ac=",
+  "awG286j5aXnRi/ivJRxZYF7iofN7zXqhOUtGX+Umk8B7fD4vEZ6zD/tSVIo=",
+  "oWepes1t/mmQJ4B+4HMxGJXfGKBMUjBwDKdM4sOHSUz2Xyjwdv2wjusT9Jk=",
+  "e1aMpjPKQi8YiSOY9K2FUrUyD4gqPL0qka31TtR+rsnLoSLgWhQMz7JgEKs=",
+  "pzFRSlOrCdPFpZGW8Qk54qQETM0otBpUl9uMmdUlpeIwLvK8v75trBpvSjw=",
+  "KuAQzKrmdXeJLE+DrZSG0JsDmmZJQM/b9ZXL15uoQQg0NrfnlIRODtmq11w="
+];
+
+function normalize(code) {
+  return code.toUpperCase().replace(/[\s-]/g, "");
+}
+
+function fromBase64(s) {
+  return Uint8Array.from(atob(s), c => c.charCodeAt(0));
+}
+
+async function keyFromCode(code) {
+  const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(normalize(code)));
+  return crypto.subtle.importKey("raw", hash, "AES-GCM", false, ["decrypt"]);
+}
+
+// try the code against every blob; AES-GCM only accepts the right key
+async function reveal(code) {
+  const key = await keyFromCode(code);
+  for (const blob of BLOBS) {
+    const bytes = fromBase64(blob);
+    try {
+      const plain = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv: bytes.slice(0, 12) }, key, bytes.slice(12));
+      return new TextDecoder().decode(plain).replace(/\0+$/, "");
+    } catch {
+      // not this person's blob, try the next one
+    }
+  }
+  return null;
+}
+
+document.getElementById("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const name = await reveal(document.getElementById("code").value);
+  document.getElementById("answer").textContent = name ?? "code not recognized";
+});
+</script>

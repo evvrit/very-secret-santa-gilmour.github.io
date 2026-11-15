@@ -1,44 +1,58 @@
-from cryptography.fernet import Fernet
+import base64
+import hashlib
+import json
+import secrets
+
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
 from pick import pick
 
-def get_key():
-    with open("fernet.key", "rb") as file:
-        return file.read().strip()
+# no 0/1/I/L/O, so codes are easy to read and type
+ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ"
+CODE_LEN = 16
+NAME_PAD = 16  # pad names so blob length doesn't hint "Ike" vs "Laura"
 
-fernet_key = get_key()
+def new_code():
+    return "".join(secrets.choice(ALPHABET) for _ in range(CODE_LEN))
 
-def encrypt(name):
-    f = Fernet(fernet_key)
-    message = name.encode()
-    enc_message = f.encrypt(message)
-    return enc_message.decode()
+def normalize(code):
+    return code.upper().replace("-", "").replace(" ", "")
+
+def key_from_code(code):
+    return hashlib.sha256(normalize(code).encode()).digest()
+
+def encrypt_name(code, name):
+    iv = secrets.token_bytes(12)
+    padded = name.encode().ljust(NAME_PAD, b"\0")
+    ciphertext = AESGCM(key_from_code(code)).encrypt(iv, padded, None)
+    return base64.b64encode(iv + ciphertext).decode()
+
+def pretty(code):
+    return "-".join(code[i:i + 4] for i in range(0, CODE_LEN, 4))
 
 def encrypt_all(pairs):
-    encrypted_pairs = []
+    codes, blobs = {}, []
 
-    for pair in pairs:
-        gifter = pair[0]
-        name_to_encrypt = pair[1]
+    for gifter, recipient in pairs:
+        code = new_code()
+        codes[gifter] = pretty(code)
+        blobs.append(encrypt_name(code, recipient))
 
-        encrypted_name = encrypt(name_to_encrypt)
+    # blob order mustn't match gifter order
+    secrets.SystemRandom().shuffle(blobs)
 
-        encrypted_pair = (gifter, encrypted_name)
-        encrypted_pairs.append(encrypted_pair)
+    return codes, blobs
 
-    return encrypted_pairs
+if __name__ == "__main__":
+    codes, blobs = encrypt_all(pick())
 
-def decrypt(enc_message):
-    f = Fernet(fernet_key)
-    dec_message = f.decrypt(enc_message)
-    return dec_message.decode()
+    # hand these out privately, one per person
+    with open("codes.txt", "w") as file:
+        for gifter, code in codes.items():
+            file.write(f"{gifter}: {code}\n")
 
-pairs = pick()
-encrypted_pairs = encrypt_all(pairs)
-print(encrypted_pairs)
+    # safe to publish: paste into BLOBS in index.html
+    with open("blobs.json", "w") as file:
+        json.dump(blobs, file, indent=2)
 
-for enc_pair in encrypted_pairs:
-    gifter = enc_pair[0]
-    enc_recipient = enc_pair[1]
-    print(gifter, enc_recipient)
-    dec_recipient = decrypt(enc_recipient)
-    print(gifter, dec_recipient)
+    print("wrote codes.txt and blobs.json")
