@@ -6,16 +6,13 @@
   --muted: #555555;
   --border: #e2e8f0;
   --accent: #44aa00;
+  --accent-hover: #FF8080;
 }
 
 .answer-row {
   display: flex;
   align-items: center;
   gap: 0.5em;
-}
-
-button:hover {
-  background-color: #FF8080
 }
 
 #bow {
@@ -42,13 +39,39 @@ button:hover {
 .tree { grid-area: tree; }
 #form { grid-area: form; }
 
-/* phones: form full width on top, stars and tree side by side below */
+.title {
+  margin: 2em 0;
+}
+
+/* separate stars + tree row shown above the form on phones only */
+.mobile-art {
+  display: none;
+}
+
 @media (max-width: 600px) {
-  .layout {
+  .title {
+    margin: 1em 0;
+  }
+
+  .mobile-art {
+    display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-areas:
-      "form form"
-      "stars tree";
+    gap: 1em;
+    width: 70%;
+    margin: 0 auto;
+  }
+
+  .mobile-art img {
+    max-width: 100%;
+  }
+
+  /* the desktop row keeps only the form */
+  .layout {
+    display: block;
+  }
+
+  .layout img {
+    display: none;
   }
 
   #bow {
