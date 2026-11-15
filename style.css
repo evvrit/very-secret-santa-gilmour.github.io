@@ -27,7 +27,7 @@
 
 .layout {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr);
   grid-template-areas: "stars form tree";
   gap: 1em;
 }
@@ -77,4 +77,8 @@
   #bow {
     height: 5em;
   }
+}
+
+#code {
+  width: 100%;
 }
