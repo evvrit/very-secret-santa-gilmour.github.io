@@ -10,7 +10,7 @@ from pick import pick
 # no 0/1/I/L/O, so codes are easy to read and type
 ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ"
 CODE_LEN = 16
-NAME_PAD = 16  # pad names so blob length doesn't hint "Ike" vs "Laura"
+PAYLOAD_PAD = 32  # pad so blob length doesn't hint "Ike" vs "Laura"
 
 def new_code():
     return "".join(secrets.choice(ALPHABET) for _ in range(CODE_LEN))
@@ -21,9 +21,12 @@ def normalize(code):
 def key_from_code(code):
     return hashlib.sha256(normalize(code).encode()).digest()
 
-def encrypt_name(code, name):
+def encrypt_pair(code, gifter, recipient):
+    payload = f"{gifter}\n{recipient}".encode()
+    assert len(payload) <= PAYLOAD_PAD, f"names too long to pad: {gifter}, {recipient}"
+
     iv = secrets.token_bytes(12)
-    padded = name.encode().ljust(NAME_PAD, b"\0")
+    padded = payload.ljust(PAYLOAD_PAD, b"\0")
     ciphertext = AESGCM(key_from_code(code)).encrypt(iv, padded, None)
     return base64.b64encode(iv + ciphertext).decode()
 
@@ -36,7 +39,7 @@ def encrypt_all(pairs):
     for gifter, recipient in pairs:
         code = new_code()
         codes[gifter] = pretty(code)
-        blobs.append(encrypt_name(code, recipient))
+        blobs.append(encrypt_pair(code, gifter, recipient))
 
     # blob order mustn't match gifter order
     secrets.SystemRandom().shuffle(blobs)
