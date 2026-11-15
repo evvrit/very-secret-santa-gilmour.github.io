@@ -2,6 +2,8 @@
 
 <html lang="en">
   <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
     <link rel="stylesheet" href="style.css">
     <script>
@@ -62,13 +64,13 @@
   <body>
     <div>
       <h2 style="margin: 2em 0">very secret santa</h2>
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em;">
-        <img src="assets/stars.svg" alt="stars">
+      <div class="layout">
+        <img class="stars" src="assets/stars.svg" alt="stars">
         <form id="form">
           <label style="margin: 1em 0;">Enter your unique code: <input id="code" autocomplete="off"></label>
           <button>reveal</button>
         </form>
-        <img src="assets/tree.svg" alt="tree">
+        <img class="tree" src="assets/tree.svg" alt="tree">
       </div>
       <div class="answer-row">
         <p id="answer"></p>

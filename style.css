@@ -27,3 +27,31 @@ button:hover {
 #bow[hidden] {
   display: none;
 }
+
+.layout {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas: "stars form tree";
+  gap: 1em;
+}
+
+/* minmax(0, ...) above and max-width here stop the 210mm-wide SVGs from overflowing */
+.layout img { max-width: 100%; }
+
+.stars { grid-area: stars; }
+.tree { grid-area: tree; }
+#form { grid-area: form; }
+
+/* phones: form full width on top, stars and tree side by side below */
+@media (max-width: 600px) {
+  .layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "form form"
+      "stars tree";
+  }
+
+  #bow {
+    height: 5em;
+  }
+}
