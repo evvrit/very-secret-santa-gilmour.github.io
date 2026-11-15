@@ -57,6 +57,3 @@ def pick():
         success, pairs = get_assignments()
 
     return pairs
-
-
-pairs = pick()
