@@ -7,3 +7,19 @@
   --border: #e2e8f0;
   --accent: #44aa00;
 }
+
+.answer-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+#bow {
+  height: 3em;
+  width: auto;
+}
+
+/* the [hidden] attribute loses to display rules otherwise */
+#bow[hidden] {
+  display: none;
+}

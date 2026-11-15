@@ -54,22 +54,26 @@
           document.getElementById("answer").textContent = match
             ? `Hey ${match.gifter}, you picked ${match.recipient}.`
             : "code not recognized";
+          document.getElementById("bow").hidden = !match;
         });
       });
       </script>
   </head>
   <body>
     <div>
-      <h2>very secret santa</h2>
-      <div style="display: grid; grid-template-columns: 1fr 50% 1fr">
+      <h2 style="margin: 2em 0">very secret santa</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em;">
         <img src="assets/stars.svg" alt="stars">
-        <form id="form">
-          <label>enter your unique code: <input id="code" autocomplete="off"></label>
+        <form id="form" style="padding:1em;">
+          <label style="margin: 1em;">Enter your unique code: <input id="code" autocomplete="off"></label>
           <button>reveal</button>
         </form>
         <img src="assets/tree.svg" alt="tree">
       </div>
-      <p id="answer"></p>
+      <div class="answer-row">
+        <p id="answer"></p>
+        <img id="bow" src="assets/bow.svg" alt="bow" hidden>
+      </div>
     </div>
   </body>
 </html>
