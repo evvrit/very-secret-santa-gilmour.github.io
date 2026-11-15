@@ -14,8 +14,12 @@
   gap: 0.5em;
 }
 
+button:hover {
+  background-color: #FF8080
+}
+
 #bow {
-  height: 3em;
+  height: 5em;
   width: auto;
 }
 
