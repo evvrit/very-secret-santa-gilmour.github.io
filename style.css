@@ -11,12 +11,12 @@
 
 .answer-row {
   display: flex;
+  flex-direction:column;
   align-items: center;
-  gap: 0.5em;
 }
 
 #bow {
-  height: 8em;
+  height: 10em;
   width: auto;
 }
 
@@ -75,7 +75,7 @@
   }
 
   #bow {
-    height: 5em;
+    height: 8em;
   }
 }
 
