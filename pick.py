@@ -1,12 +1,12 @@
 import random
 
-GIFTERS = ["Jean", "Laura", "Lois", "Brian", "Ike", "Elyse", "Mel", "Louis"]
+GIFTERS = ["Marie-France", "Michel", "Phil", "Camille", "Pat", "Amanda", "Mel", "Louis"]
 
 FORBIDDEN_PAIRINGS = list(map(sorted, [
-    ("Jean", "Laura"),
-    ("Ike", "Elyse"),
+    ("Marie-France", "Michel"),
+    ("Phil", "Camille"),
     ("Mel", "Louis"),
-    ("Lois", "Brian"),
+    ("Pat", "Amanda"),
 ]))
 
 def is_invalid(pair: tuple[str, str] | list[str, str]):

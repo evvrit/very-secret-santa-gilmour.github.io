@@ -54,8 +54,8 @@
           e.preventDefault();
           const match = await reveal(document.getElementById("code").value);
           document.getElementById("answer").textContent = match
-            ? `Hey ${match.gifter}, you picked ${match.recipient}.`
-            : "code not recognized";
+            ? `Salut ${match.gifter}, vous avez choisi ${match.recipient}.`
+            : "code non reconnue";
           document.getElementById("bow").hidden = !match;
         });
       });
@@ -63,7 +63,7 @@
   </head>
   <body>
     <div>
-      <h2 class="title">very secret santa</h2>
+      <h2 class="title">santa secret</h2>
       <div class="mobile-art">
         <img src="assets/skeleton_key.png" alt="stars">
         <img src="assets/rosary_hands.png" alt="tree">
@@ -71,8 +71,8 @@
       <div class="layout">
         <img class="stars" src="assets/skeleton_key.png" alt="stars">
         <form id="form">
-          <label style="margin: 1em 0;">Enter your unique code: <input id="code" autocomplete="off"></label>
-          <button>reveal</button>
+          <label style="margin: 1em 0;">Saisissez votre code unique: <input id="code" autocomplete="off"></label>
+          <button>Révéler</button>
         </form>
         <img class="tree" src="assets/rosary_hands.png" alt="tree">
       </div>
